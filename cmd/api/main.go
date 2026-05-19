@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/arkadashiim/go_gitify/config"
+	"github.com/arkadashiim/go_gitify/internal/config"
 	"github.com/arkadashiim/go_gitify/internal/gitwriter"
 )
 

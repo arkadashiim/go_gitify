@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/arkadashiim/go_gitify/config"
+	"github.com/arkadashiim/go_gitify/internal/config"
 )
 
 const DEFAULT_COMMIT_MESSAGE = "default"
