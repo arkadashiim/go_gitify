@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/arkadashiim/go_gitify/internal/config"
 	"github.com/arkadashiim/go_gitify/internal/gitwriter"
@@ -17,16 +16,16 @@ func main() {
 		panic(err)
 	}
 
-	// gitWriter := gitwriter.NewGitWriter(config)
-	// testCommit(gitWriter)
-
-	d := graph.GraphDateByCoordinates(1, 0)
-	fmt.Println(d)
+	gitWriter := gitwriter.NewGitWriter(config)
+	testCommit(gitWriter)
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
-	dateString := "2025-05-19"
-	date, _ := time.Parse(time.DateOnly, dateString)
+
+	date, err := graph.GraphDateByCoordinates(1, 0)
+	if err != nil {
+		panic(err)
+	}
 
 	if output, err := gw.EmptyCommit(date, ""); err != nil {
 		panic(err)
@@ -39,4 +38,6 @@ func testCommit(gw *gitwriter.GitWriter) {
 	} else {
 		fmt.Println(string(output))
 	}
+
+	fmt.Println(date)
 }

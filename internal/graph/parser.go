@@ -1,14 +1,25 @@
 package graph
 
-import "time"
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
-const daysInWeek = 7
+const (
+	daysInWeek  = 7
+	weeksInYear = 53
+)
 
-func GraphDateByCoordinates(x, y int) time.Time {
+func GraphDateByCoordinates(x, y int) (time.Time, error) {
+	if err := validateCoordinates(x, y); err != nil {
+		return time.Time{}, err
+	}
+
 	startDate := getGraphStartDate()
 	daysToAdd := x*daysInWeek + y
 
-	return startDate.AddDate(0, 0, daysToAdd)
+	return startDate.AddDate(0, 0, daysToAdd), nil
 }
 
 func getGraphStartDate() time.Time {
@@ -23,6 +34,24 @@ func getGraphStartDate() time.Time {
 		time.UTC,
 	)
 
-	// Откат до воскресенье (в начало графика)
+	// Откат до воскресенья (в начало графика)
 	return t.AddDate(0, 0, -int(t.Weekday()))
+}
+
+func validateCoordinates(x, y int) error {
+	var errs []error
+
+	if y < 0 || y >= daysInWeek {
+		errs = append(errs, fmt.Errorf("error days representation: %d", y))
+	}
+
+	if x < 0 || x >= weeksInYear {
+		errs = append(errs, fmt.Errorf("error weeks representation: %d", x))
+	}
+
+	if len(errs) == 0 {
+		return nil
+	} else {
+		return errors.Join(errs...)
+	}
 }
