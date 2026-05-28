@@ -4,11 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
-)
 
-const (
-	daysInWeek  = 7
-	weeksInYear = 53
+	"github.com/arkadashiim/go_gitify/internal/constants"
 )
 
 func GraphDateByCoordinates(x, y int) (time.Time, error) {
@@ -17,7 +14,7 @@ func GraphDateByCoordinates(x, y int) (time.Time, error) {
 	}
 
 	startDate := getGraphStartDate()
-	daysToAdd := x*daysInWeek + y
+	daysToAdd := x*constants.DaysInWeek + y
 
 	return startDate.AddDate(0, 0, daysToAdd), nil
 }
@@ -41,11 +38,11 @@ func getGraphStartDate() time.Time {
 func validateCoordinates(x, y int) error {
 	var errs []error
 
-	if y < 0 || y >= daysInWeek {
+	if y < 0 || y >= constants.DaysInWeek {
 		errs = append(errs, fmt.Errorf("error days representation: %d", y))
 	}
 
-	if x < 0 || x >= weeksInYear {
+	if x < 0 || x >= constants.WeeksInYear {
 		errs = append(errs, fmt.Errorf("error weeks representation: %d", x))
 	}
 
