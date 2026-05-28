@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/arkadashiim/go_gitify/internal/bitmap"
 	"github.com/arkadashiim/go_gitify/internal/config"
 	"github.com/arkadashiim/go_gitify/internal/gitwriter"
 	"github.com/arkadashiim/go_gitify/internal/graph"
@@ -18,9 +19,17 @@ func main() {
 
 	gitWriter := gitwriter.NewGitWriter(config)
 	testCommit(gitWriter)
+
+	font, err := bitmap.LoadFont()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(font[' '])
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
+	return
 
 	date, err := graph.GraphDateByCoordinates(1, 0)
 	if err != nil {
