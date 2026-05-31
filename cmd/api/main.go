@@ -20,12 +20,17 @@ func main() {
 	gitWriter := gitwriter.NewGitWriter(config)
 	testCommit(gitWriter)
 
-	font, err := bitmap.LoadFont()
+	bitmapDrawer, err := bitmap.NewBitmapDrawer()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(font[' '])
+	bitmap, err := bitmapDrawer.DrawBitmap("я хочу пиццы")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(bitmap)
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
