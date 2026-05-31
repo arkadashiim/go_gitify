@@ -8,13 +8,13 @@ import (
 	"github.com/arkadashiim/go_gitify/internal/constants"
 )
 
-type BitmapType = map[rune][]string
+type Font = map[rune][]string
 
-func LoadFont() (BitmapType, error) {
+func loadFont() (Font, error) {
 	return validateFontMap(font)
 }
 
-func validateFontMap(fontMap BitmapType) (BitmapType, error) {
+func validateFontMap(fontMap Font) (Font, error) {
 	var errs []error
 	var errFound bool = false
 
@@ -58,13 +58,13 @@ func validateFontMap(fontMap BitmapType) (BitmapType, error) {
 	}
 
 	if errFound {
-		return BitmapType{}, errors.Join(errs...)
+		return Font{}, errors.Join(errs...)
 	} else {
 		return fontMap, nil
 	}
 }
 
-var font = BitmapType{
+var font = Font{
 	' ': {
 		"000",
 	},
@@ -435,5 +435,102 @@ var font = BitmapType{
 		"01111",
 		"00001",
 		"11110",
+	},
+
+	'Ф': {
+		"00100",
+		"11111",
+		"10101",
+		"11111",
+		"00100",
+		"00100",
+	},
+
+	'Х': {
+		"10001",
+		"01010",
+		"00100",
+		"01010",
+		"10001",
+	},
+
+	'Ц': {
+		"10001",
+		"10001",
+		"10001",
+		"111111",
+	},
+
+	'Ч': {
+		"10001",
+		"10001",
+		"11111",
+		"00001",
+		"00001",
+	},
+
+	'Ш': {
+		"10101",
+		"10101",
+		"10101",
+		"10101",
+		"11111",
+	},
+
+	'Щ': {
+		"10101",
+		"10101",
+		"10101",
+		"10101",
+		"111111",
+	},
+
+	'Ъ': {
+		"11000",
+		"01000",
+		"01110",
+		"01001",
+		"01110",
+	},
+
+	'Ы': {
+		"1000001",
+		"1000001",
+		"1111101",
+		"1000101",
+		"1111101",
+	},
+
+	'Ь': {
+		"1000",
+		"1000",
+		"1110",
+		"1001",
+		"1110",
+	},
+
+	'Э': {
+		"11111",
+		"00001",
+		"11111",
+		"00001",
+		"11111",
+	},
+
+	'Ю': {
+		"10111",
+		"10101",
+		"11101",
+		"10101",
+		"10111",
+	},
+
+	'Я': {
+		"11111",
+		"10001",
+		"11111",
+		"00101",
+		"01001",
+		"10001",
 	},
 }
