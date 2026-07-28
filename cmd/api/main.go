@@ -32,6 +32,7 @@ func main() {
 	}
 
 	render.RenderBitmap(bitmap)
+	renderFullAlphabet(bitmapDrawer)
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
@@ -55,4 +56,20 @@ func testCommit(gw *gitwriter.GitWriter) {
 	}
 
 	fmt.Println(date)
+}
+
+func renderFullAlphabet(bd *bitmap.BitmapDrawer) {
+	printRune := func(r rune) {
+		bitmap, err := bd.DrawBitmap(string(r))
+
+		if err != nil {
+			return
+		}
+
+		render.RenderBitmap(bitmap)
+	}
+
+	for ch := 'а'; ch <= 'я'; ch++ {
+		printRune(ch)
+	}
 }
