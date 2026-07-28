@@ -17,6 +17,8 @@ const (
 
 const DefaultBitmapPoint BitmapPoint = Empty
 
+const LetterGap = 1
+
 type BitmapDrawer struct {
 	font Font
 }
@@ -52,7 +54,7 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 			maxRowLength = len(symbolsRow)
 		}
 
-		if currentBitmapLength+maxRowLength >= constants.WeeksInYear {
+		if currentBitmapLength+maxRowLength > constants.WeeksInYear {
 			return Bitmap{}, fmt.Errorf("bitmap length exceeded!")
 		}
 
@@ -68,6 +70,8 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 				}
 			}
 		}
+
+		currentBitmapLength += maxRowLength + LetterGap
 	}
 
 	return bitmap, nil
