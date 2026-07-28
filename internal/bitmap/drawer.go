@@ -11,8 +11,8 @@ type BitmapPoint = rune
 type Bitmap = [constants.DaysInWeek][constants.WeeksInYear]BitmapPoint
 
 const (
-	Empty   BitmapPoint = '0'
-	Spotted BitmapPoint = '1'
+	Empty   BitmapPoint = 0
+	Spotted BitmapPoint = 1
 )
 
 const DefaultBitmapPoint BitmapPoint = Empty
@@ -60,7 +60,12 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 
 			for symbolIndex, symbol := range symbolsRow {
 				currentSymbolIndex := currentBitmapLength + symbolIndex
-				bitmap[rowIndex][currentSymbolIndex] = symbol
+
+				if symbol == '1' {
+					bitmap[rowIndex][currentSymbolIndex] = Spotted
+				} else {
+					bitmap[rowIndex][currentSymbolIndex] = Empty
+				}
 			}
 		}
 	}
