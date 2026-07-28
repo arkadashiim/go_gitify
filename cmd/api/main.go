@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	bitmap, err := bitmapDrawer.DrawBitmap("пицца")
+	bitmap, err := bitmapDrawer.DrawBitmap("печалька")
 	if err != nil {
 		panic(err)
 	}
