@@ -7,6 +7,7 @@ import (
 	"github.com/arkadashiim/go_gitify/internal/config"
 	"github.com/arkadashiim/go_gitify/internal/gitwriter"
 	"github.com/arkadashiim/go_gitify/internal/graph"
+	"github.com/arkadashiim/go_gitify/internal/render"
 )
 
 func main() {
@@ -25,12 +26,12 @@ func main() {
 		panic(err)
 	}
 
-	bitmap, err := bitmapDrawer.DrawBitmap("я хочу пиццы")
+	bitmap, err := bitmapDrawer.DrawBitmap("пицца")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(bitmap)
+	render.RenderBitmap(bitmap)
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
