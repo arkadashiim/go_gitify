@@ -66,7 +66,7 @@ func validateFontMap(fontMap Font) (Font, error) {
 
 var font = Font{
 	' ': {
-		"000",
+		"0",
 	},
 
 	'A': {
