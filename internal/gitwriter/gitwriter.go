@@ -51,6 +51,49 @@ func (w *GitWriter) Push() ([]byte, error) {
 	return output, nil
 }
 
+func (w *GitWriter) ForcePush() ([]byte, error) {
+	output, err := w.run(w.buildPushEnv(), "push", "--force", "origin", w.config.GraphBranch)
+	if err != nil {
+		return nil, err
+	}
+
+	return output, nil
+}
+
+// ResetHistory заменяет ветку GraphBranch на единственный пустой коммит,
+// стирая всю предыдущую историю. Локально - push нужно делать отдельно.
+func (w *GitWriter) ResetHistory() ([]byte, error) {
+	const tmpBranch = "gitify-reset-tmp"
+
+	var out []byte
+
+	if output, err := w.run(nil, "checkout", "--orphan", tmpBranch); err != nil {
+		return nil, err
+	} else {
+		out = append(out, output...)
+	}
+
+	if output, err := w.run(nil, "reset", "--hard"); err != nil {
+		return nil, err
+	} else {
+		out = append(out, output...)
+	}
+
+	if output, err := w.run(w.buildBaseEnv(), "commit", "--allow-empty", "-m", "reset"); err != nil {
+		return nil, err
+	} else {
+		out = append(out, output...)
+	}
+
+	if output, err := w.run(nil, "branch", "-M", tmpBranch, w.config.GraphBranch); err != nil {
+		return nil, err
+	} else {
+		out = append(out, output...)
+	}
+
+	return out, nil
+}
+
 func (w *GitWriter) run(
 	env []string,
 	args ...string,

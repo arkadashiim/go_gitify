@@ -19,6 +19,11 @@ import (
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
+	if len(os.Args) > 1 && os.Args[1] == "--reset" {
+		resetGraph(reader)
+		return
+	}
+
 	text := textFromArgsOrPrompt(reader)
 	start := graph.StartDate(yearFromPrompt(reader))
 
@@ -108,6 +113,39 @@ func fillGraph(gw *gitwriter.GitWriter, bm bitmap.Bitmap, start time.Time) error
 	}
 
 	return nil
+}
+
+func resetGraph(reader *bufio.Reader) {
+	cfg, err := config.Load()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf(
+		"Это сотрёт ВСЮ историю коммитов в %s (ветка %s) и форс-запушит пустое состояние в origin. Это необратимо.\n",
+		cfg.RepoPath, cfg.GraphBranch,
+	)
+	fmt.Print("Чтобы подтвердить, введи RESET: ")
+
+	input, _ := reader.ReadString('\n')
+	if strings.TrimSpace(input) != "RESET" {
+		fmt.Println("Отменено")
+		return
+	}
+
+	gitWriter := gitwriter.NewGitWriter(cfg)
+
+	if output, err := gitWriter.ResetHistory(); err != nil {
+		panic(err)
+	} else {
+		fmt.Println(string(output))
+	}
+
+	if output, err := gitWriter.ForcePush(); err != nil {
+		panic(err)
+	} else {
+		fmt.Println(string(output))
+	}
 }
 
 func confirm(reader *bufio.Reader, prompt string) bool {
