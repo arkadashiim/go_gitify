@@ -2,6 +2,7 @@ package render
 
 import (
 	"fmt"
+	"time"
 
 	bimapLib "github.com/arkadashiim/go_gitify/internal/bitmap"
 	"github.com/arkadashiim/go_gitify/internal/constants"
@@ -23,11 +24,11 @@ var monthAbbreviations = [...]string{
 	"Июл", "Авг", "Сен", "Окт", "Ноя", "Дек",
 }
 
-func RenderBitmap(bitmap bimapLib.Bitmap) {
+func RenderBitmap(bitmap bimapLib.Bitmap, start time.Time) {
 	formatStringForSpace := "%-3s"
 
 	fmt.Printf(formatStringForSpace, "")
-	fmt.Println(monthHeader())
+	fmt.Println(monthHeader(start))
 
 	for dayIndex, row := range bitmap {
 		fmt.Printf(formatStringForSpace, weekdayLabels[dayIndex])
@@ -53,7 +54,7 @@ type monthMark struct {
 	label []rune
 }
 
-func monthHeader() string {
+func monthHeader(start time.Time) string {
 	header := make([]rune, constants.WeeksInYear*2)
 	for i := range header {
 		header[i] = ' '
@@ -62,7 +63,7 @@ func monthHeader() string {
 	var marks []monthMark
 	lastMonth := 0
 	for week := range constants.WeeksInYear {
-		date, err := graph.GraphDateByCoordinates(week, 0)
+		date, err := graph.GraphDateByCoordinates(start, week, 0)
 		if err != nil {
 			continue
 		}

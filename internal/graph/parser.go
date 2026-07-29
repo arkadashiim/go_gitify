@@ -8,25 +8,26 @@ import (
 	"github.com/arkadashiim/go_gitify/internal/constants"
 )
 
-func GraphDateByCoordinates(x, y int) (time.Time, error) {
+func GraphDateByCoordinates(start time.Time, x, y int) (time.Time, error) {
 	if err := validateCoordinates(x, y); err != nil {
 		return time.Time{}, err
 	}
 
-	startDate := getGraphStartDate()
 	daysToAdd := x*constants.DaysInWeek + y
 
-	return startDate.AddDate(0, 0, daysToAdd), nil
+	return start.AddDate(0, 0, daysToAdd), nil
 }
 
-func getGraphStartDate() time.Time {
-	// Дата год назд
-	oneYearAgo := time.Now().AddDate(-1, 0, 0)
+func StartDate(year int) time.Time {
+	base := time.Now().AddDate(-1, 0, 0)
+	if year > 0 {
+		base = time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	}
 
 	t := time.Date(
-		oneYearAgo.Year(),
-		oneYearAgo.Month(),
-		oneYearAgo.Day(),
+		base.Year(),
+		base.Month(),
+		base.Day(),
 		0, 0, 0, 0,
 		time.UTC,
 	)
