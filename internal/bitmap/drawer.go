@@ -35,54 +35,25 @@ func NewBitmapDrawer() (*BitmapDrawer, error) {
 
 func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 	var bitmap Bitmap
-	totalWidth := 0
 
-	// подсчет длины заранее для центрирования
-	for _, char := range text {
-		word, ok := font[unicode.ToUpper(char)]
-
-		if !ok {
-			return Bitmap{}, fmt.Errorf("there is no char \"%s\" in font", string(char))
-		}
-
-		maxRowLength := 0
-		for _, symbolsRow := range word {
-			if len(symbolsRow) <= maxRowLength {
-				continue
-			}
-
-			maxRowLength = len(symbolsRow)
-		}
-
-		totalWidth += maxRowLength + LetterGap
+	totalWidth, err := bd.textWidth(text)
+	if err != nil {
+		return Bitmap{}, err
 	}
-
-	// после последней буквы зазор не нужен
-	totalWidth -= LetterGap
 
 	if totalWidth > constants.WeeksInYear {
 		return Bitmap{}, fmt.Errorf("bitmap length exceeded!")
 	}
 
 	offset := (constants.WeeksInYear - totalWidth) / 2
+
 	for _, char := range text {
-		word, ok := font[unicode.ToUpper(char)]
-
-		if !ok {
-			return Bitmap{}, fmt.Errorf("there is no char \"%s\" in font", string(char))
+		letter, err := bd.letter(char)
+		if err != nil {
+			return Bitmap{}, err
 		}
 
-		maxRowLength := 0
-		for _, symbolsRow := range word {
-			if len(symbolsRow) <= maxRowLength {
-				continue
-			}
-
-			maxRowLength = len(symbolsRow)
-		}
-
-		for rowIndex, symbolsRow := range word {
-
+		for rowIndex, symbolsRow := range letter {
 			for symbolIndex, symbol := range symbolsRow {
 				currentSymbolIndex := offset + symbolIndex
 
@@ -94,8 +65,46 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 			}
 		}
 
-		offset += maxRowLength + LetterGap
+		offset += letterWidth(letter) + LetterGap
 	}
 
 	return bitmap, nil
+}
+
+// textWidth возвращает суммарную ширину текста в колонках
+func (bd *BitmapDrawer) textWidth(text string) (int, error) {
+	width := 0
+
+	for _, char := range text {
+		letter, err := bd.letter(char)
+		if err != nil {
+			return 0, err
+		}
+
+		width += letterWidth(letter) + LetterGap
+	}
+
+	return width - LetterGap, nil
+}
+
+func (bd *BitmapDrawer) letter(char rune) ([]string, error) {
+	letter, ok := bd.font[unicode.ToUpper(char)]
+
+	if !ok {
+		return nil, fmt.Errorf("there is no char \"%s\" in font", string(char))
+	}
+
+	return letter, nil
+}
+
+func letterWidth(letter []string) int {
+	width := 0
+
+	for _, symbolsRow := range letter {
+		if len(symbolsRow) > width {
+			width = len(symbolsRow)
+		}
+	}
+
+	return width
 }
