@@ -32,7 +32,7 @@ func main() {
 	}
 
 	render.RenderBitmap(bitmap)
-	renderFullAlphabet(bitmapDrawer)
+	// renderFullAlphabet(bitmapDrawer)
 }
 
 func testCommit(gw *gitwriter.GitWriter) {
