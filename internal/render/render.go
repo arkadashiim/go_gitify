@@ -8,6 +8,13 @@ import (
 	"github.com/arkadashiim/go_gitify/internal/graph"
 )
 
+type PrintPoint = string
+
+const (
+	Empty   PrintPoint = "\x1b[38;5;236m▗▖\x1b[0m"
+	Spotted PrintPoint = "\x1b[38;5;34m▗▖\x1b[0m"
+)
+
 var weekdayLabels = [constants.DaysInWeek]string{"Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"}
 
 var monthAbbreviations = [...]string{
@@ -26,14 +33,18 @@ func RenderBitmap(bitmap bimapLib.Bitmap) {
 		fmt.Printf(formatStringForSpace, weekdayLabels[dayIndex])
 
 		for _, point := range row {
-			if point == bimapLib.Spotted {
-				fmt.Print("\x1b[48;5;34m  \x1b[0m") // зелёный фон — коммит
-			} else {
-				fmt.Print("\x1b[48;5;236m  \x1b[0m") // серый фон — пусто
-			}
+			fmt.Print(toPrintPoint(point))
 		}
 
 		fmt.Println()
+	}
+}
+
+func toPrintPoint(p bimapLib.BitmapPoint) PrintPoint {
+	if p == bimapLib.Spotted {
+		return Spotted
+	} else {
+		return Empty
 	}
 }
 
