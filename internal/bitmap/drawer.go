@@ -33,11 +33,11 @@ func NewBitmapDrawer() (*BitmapDrawer, error) {
 	return &BitmapDrawer{font: font}, nil
 }
 
-// TODO: закончить!!!
 func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 	var bitmap Bitmap
-	currentBitmapLength := 0
+	totalWidth := 0
 
+	// подсчет длины заранее для центрирования
 	for _, char := range text {
 		word, ok := font[unicode.ToUpper(char)]
 
@@ -54,14 +54,37 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 			maxRowLength = len(symbolsRow)
 		}
 
-		if currentBitmapLength+maxRowLength > constants.WeeksInYear {
-			return Bitmap{}, fmt.Errorf("bitmap length exceeded!")
+		totalWidth += maxRowLength + LetterGap
+	}
+
+	// после последней буквы зазор не нужен
+	totalWidth -= LetterGap
+
+	if totalWidth > constants.WeeksInYear {
+		return Bitmap{}, fmt.Errorf("bitmap length exceeded!")
+	}
+
+	offset := (constants.WeeksInYear - totalWidth) / 2
+	for _, char := range text {
+		word, ok := font[unicode.ToUpper(char)]
+
+		if !ok {
+			return Bitmap{}, fmt.Errorf("there is no char \"%s\" in font", string(char))
+		}
+
+		maxRowLength := 0
+		for _, symbolsRow := range word {
+			if len(symbolsRow) <= maxRowLength {
+				continue
+			}
+
+			maxRowLength = len(symbolsRow)
 		}
 
 		for rowIndex, symbolsRow := range word {
 
 			for symbolIndex, symbol := range symbolsRow {
-				currentSymbolIndex := currentBitmapLength + symbolIndex
+				currentSymbolIndex := offset + symbolIndex
 
 				if symbol == '1' {
 					bitmap[rowIndex][currentSymbolIndex] = Spotted
@@ -71,7 +94,7 @@ func (bd *BitmapDrawer) DrawBitmap(text string) (Bitmap, error) {
 			}
 		}
 
-		currentBitmapLength += maxRowLength + LetterGap
+		offset += maxRowLength + LetterGap
 	}
 
 	return bitmap, nil
